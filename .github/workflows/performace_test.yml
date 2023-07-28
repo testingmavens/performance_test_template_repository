@@ -27,8 +27,17 @@ jobs:
             justb4/jmeter \
             -g /mnt/jmeter/test_results.jtl -o /mnt/jmeter/report
 
-      - name: Publish Report to GitHub Pages
+      - name: Deploy Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./report
+
+      - name: Get Report URL
+        id: report_url
+        run: |
+          echo "::set-output name=report_url::https://${{ github.repository_owner }}.github.io/${{ github.repository }}/report"
+
+      - name: Print Report URL
+        run: |
+          echo "Report URL: ${{ steps.report_url.outputs.report_url }}"
