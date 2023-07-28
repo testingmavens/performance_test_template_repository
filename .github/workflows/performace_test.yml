@@ -1,4 +1,4 @@
-name: JMeter Performance Test
+name: Example Test with JMeter (using container)
 
 on:
   push:
@@ -13,23 +13,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Set up Java
-        uses: actions/setup-java@v2
-        with:
-          java-version: '11'
-
-      - name: Download and Install JMeter
-        run: |
-          curl -LJO https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.4.1.tgz
-          tar -xzf apache-jmeter-5.4.1.tgz
-          rm apache-jmeter-5.4.1.tgz
-
       - name: Run JMeter Test
         run: |
-          ./apache-jmeter-5.4.1/bin/jmeter -n -t jmeter-example.jmx -l test_results.jtl
+          docker run --rm \
+            -v $PWD:/mnt/jmeter \
+            justb4/jmeter \
+            -n -t /mnt/jmeter/test_plan.jmx -l /mnt/jmeter/test_results.jtl
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v2
         with:
-          name: jmeter-test-results
+          name: example-test-results
           path: test_results.jtl
