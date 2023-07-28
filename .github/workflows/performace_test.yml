@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch: # Add the manual workflow dispatch event
 
 jobs:
   performance_test:
