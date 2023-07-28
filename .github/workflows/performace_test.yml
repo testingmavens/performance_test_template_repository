@@ -1,5 +1,5 @@
 name: Example Test with JMeter and Generate Report
-run-name: UI functional tests ran by @${{ github.actor }} - run number ${{ github.run_number }}
+run-name: Performance tests ran by @${{ github.actor }} - run number ${{ github.run_number }}
 on:
     workflow_dispatch:
     
