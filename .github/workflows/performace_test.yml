@@ -1,4 +1,4 @@
-name: Example Test with JMeter (using container)
+name: Example Test with JMeter and Generate Report
 
 on:
   push:
@@ -20,8 +20,15 @@ jobs:
             justb4/jmeter \
             -n -t /mnt/jmeter/test_plan.jmx -l /mnt/jmeter/test_results.jtl
 
-      - name: Upload Test Results
-        uses: actions/upload-artifact@v2
+      - name: Generate JMeter Report
+        run: |
+          docker run --rm \
+            -v $PWD:/mnt/jmeter \
+            justb4/jmeter \
+            -g /mnt/jmeter/test_results.jtl -o /mnt/jmeter/report
+
+      - name: Publish Report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          name: example-test-results
-          path: test_results.jtl
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./report
