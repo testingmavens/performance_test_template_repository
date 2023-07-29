@@ -1,10 +1,8 @@
-name: Example Test with JMeter and Generate Report
-run-name: Performance tests ran by @${{ github.actor }} - run number ${{ github.run_number }}
+name: JMeter Test and Publish Report
+
 on:
-    workflow_dispatch:
-    
-    push:
-     branches:
+  push:
+    branches:
       - main
 
 jobs:
@@ -15,31 +13,31 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+      - name: Install JMeter
+        run: |
+          wget -q https://dlcdn.apache.org/jmeter/binaries/apache-jmeter-5.4.1.tgz
+          tar -xzf apache-jmeter-5.4.1.tgz
+          rm apache-jmeter-5.4.1.tgz
+        working-directory: ${{ github.workspace }}
+
       - name: Run JMeter Test
         run: |
-          docker run --rm \
-            -v $PWD:/mnt/jmeter \
-            justb4/jmeter \
-            -n -t /mnt/jmeter/test_plan.jmx -l /mnt/jmeter/test_results.jtl
+          JMETER_SCRIPT="${{ github.workspace }}/test_plan.jmx"
+          JMETER_RESULTS="${{ github.workspace }}/test/JMeter/results"
+          ./apache-jmeter-5.4.1/bin/jmeter -n -t "$JMETER_SCRIPT" -l "$JMETER_RESULTS/test_results.jtl"
 
       - name: Generate JMeter Report
         run: |
-          docker run --rm \
-            -v $PWD:/mnt/jmeter \
-            justb4/jmeter \
-            -g /mnt/jmeter/test_results.jtl -o /mnt/jmeter/report
+          JMETER_RESULTS="${{ github.workspace }}/test/JMeter/results"
+          mkdir -p "$JMETER_RESULTS/report"
+          ./apache-jmeter-5.4.1/bin/jmeter -g "$JMETER_RESULTS/test_results.jtl" -o "$JMETER_RESULTS/report"
 
-      - name: Deploy Report to GitHub Pages
+      - name: Copy index.html to the Report Folder
+        run: |
+          cp ${{ github.workspace }}/index.html ${{ github.workspace }}/test/JMeter/results/report/
+
+      - name: Publish Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./report
-
-      - name: Get Report URL
-        id: report_url
-        run: |
-          echo "::set-output name=report_url::https://${{ github.repository_owner }}.github.io/${{ github.repository }}/report"
-
-      - name: Print Report URL
-        run: |
-          echo "Report URL: ${{ steps.report_url.outputs.report_url }}"
+          publish_dir: ${{ github.workspace }}/test/JMeter/results/report
