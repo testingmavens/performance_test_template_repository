@@ -15,7 +15,7 @@ jobs:
 
       - name: Install JMeter
         run: |
-          wget -q https://downloads.apache.org//jmeter/binaries/apache-jmeter-5.6.2.tgz
+          wget -q https://downloads.apache.org/jmeter/binaries/apache-jmeter-5.6.2.tgz
           tar -xzf apache-jmeter-5.6.2.tgz
           rm apache-jmeter-5.6.2.tgz
         working-directory: ${{ github.workspace }}
@@ -32,12 +32,9 @@ jobs:
           mkdir -p "$JMETER_RESULTS/report"
           ./apache-jmeter-5.6.2/bin/jmeter -g "$JMETER_RESULTS/test_results.jtl" -o "$JMETER_RESULTS/report"
 
-      - name: Copy index.html to the Report Folder
-        run: |
-          cp ${{ github.workspace }}/index.html ${{ github.workspace }}/test/JMeter/results/report/
-
-      - name: Publish Report to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Upload Test Report
+        if: always() # This step will always run, regardless of previous steps' success
+        uses: actions/upload-artifact@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{ github.workspace }}/test/JMeter/results/report
+          name: jmeter-report
+          path: ${{ github.workspace }}/test/JMeter/results/report
