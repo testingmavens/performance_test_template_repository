@@ -1,5 +1,4 @@
-name: JMeter Test and Publish Report
-
+name: JMeter Test 
 on:
   push:
     branches:
