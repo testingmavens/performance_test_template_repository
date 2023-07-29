@@ -15,29 +15,29 @@ jobs:
 
       - name: Install JMeter
         run: |
-          wget -q https://dlcdn.apache.org/jmeter/binaries/apache-jmeter-5.4.1.tgz
-          tar -xzf apache-jmeter-5.4.1.tgz
-          rm apache-jmeter-5.4.1.tgz
+          wget -q https://downloads.apache.org//jmeter/binaries/apache-jmeter-5.6.2.tgz
+          tar -xzf apache-jmeter-5.6.2.tgz
+          rm apache-jmeter-5.6.2.tgz
         working-directory: ${{ github.workspace }}
 
       - name: Run JMeter Test
         run: |
           JMETER_SCRIPT="${{ github.workspace }}/test_plan.jmx"
           JMETER_RESULTS="${{ github.workspace }}/test/JMeter/results"
-          ./apache-jmeter-5.4.1/bin/jmeter -n -t "$JMETER_SCRIPT" -l "$JMETER_RESULTS/test_results.jtl"
+          ./apache-jmeter-5.6.2/bin/jmeter -n -t "$JMETER_SCRIPT" -l "$JMETER_RESULTS/test_results.jtl"
 
       - name: Generate JMeter Report
         run: |
           JMETER_RESULTS="${{ github.workspace }}/test/JMeter/results"
           mkdir -p "$JMETER_RESULTS/report"
-          ./apache-jmeter-5.4.1/bin/jmeter -g "$JMETER_RESULTS/test_results.jtl" -o "$JMETER_RESULTS/report"
+          ./apache-jmeter-5.6.2/bin/jmeter -g "$JMETER_RESULTS/test_results.jtl" -o "$JMETER_RESULTS/report"
 
       - name: Copy index.html to the Report Folder
         run: |
           cp ${{ github.workspace }}/index.html ${{ github.workspace }}/test/JMeter/results/report/
 
       - name: Publish Report to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ${{ github.workspace }}/test/JMeter/results/report
