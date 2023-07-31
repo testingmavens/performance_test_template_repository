@@ -53,9 +53,16 @@ jobs:
           JMETER_RESULTS="${{ github.workspace }}/test/JMeter/results"
           ${{ github.workspace }}/allure-2.14.0/bin/allure generate "$JMETER_RESULTS/report" -o "$JMETER_RESULTS/allure-report"
 
-      - name: Deploy to GitHub Pages
+      - name: Upload Test Report
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: allure-report-${{ github.run_number }}
+          path: ${{ github.workspace }}/test/JMeter/results/allure-report/
+
+      - name: Deploy to Github Pages
         if: always()
         id: deployment
         uses: actions/deploy-pages@v2
         with:
-         artifact_name: /home/runner/work/performance_test_template_repository/performance_test_template_repository/test/JMeter/results/allure-report
+          artifact_name: allure-report-${{ github.run_number }}
