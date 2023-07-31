@@ -39,17 +39,29 @@ jobs:
           JMETER_RESULTS="${{ github.workspace }}/test/JMeter/results"
           mkdir -p "$JMETER_RESULTS/report"
           ./apache-jmeter-5.6.2/bin/jmeter -g "$JMETER_RESULTS/test_results.jtl" -o "$JMETER_RESULTS/report"
+      - name: Upload index.html
+        if: always()
+        run: |
+          INDEX_HTML=$(find ${{ github.workspace }}/test/JMeter/results/report -name "index.html" -type f)
+          if [ -n "$INDEX_HTML" ]; then
+            echo "Index.html found at: $INDEX_HTML"
+            cp "$INDEX_HTML" ${{ github.workspace }}/index.html
+          else
+            echo "Index.html not found."
+          fi
+        continue-on-error: true
 
       - name: Upload Test Report
         if: always()
         uses: actions/upload-artifact@v2
         with:
           name: jmeter-test-report
-          path: ${{ github.workspace }}/test/JMeter/results/report/
+          path: ${{ github.workspace }}/index.html
+          
 
       - name: Deploy to GitHub Pages
         if: always()
         id: deployment
         uses: actions/deploy-pages@v2
         with:
-          artifact_name: ${{ github.workspace }}/test/JMeter/results/report/
+          artifact_name: jmeter-test-report
