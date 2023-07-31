@@ -48,15 +48,3 @@ jobs:
         with:
           name: jmeter-report
           path: ${{ github.workspace }}/test/JMeter/results/report
-
-      - name: Download HTML Report
-        run: |
-          mkdir -p ${{ github.workspace }}/html_report
-          curl -LJO "${{ steps.deployment.outputs.page_url }}/report/index.html" -o ${{ github.workspace }}/html_report/index.html
-
-      - name: Deploy to Github Pages
-        if: always()
-        id: deployment
-        uses: actions/deploy-pages@v2
-        with:
-          artifact_name: ${{ github.workspace }}/html_report
