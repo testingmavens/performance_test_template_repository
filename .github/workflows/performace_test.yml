@@ -53,7 +53,7 @@ jobs:
           JMETER_RESULTS="${{ github.workspace }}/test/JMeter/results"
           ${{ github.workspace }}/allure-2.14.0/bin/allure generate "$JMETER_RESULTS/report" -o "$JMETER_RESULTS/allure-report"
 
-      - name: Upload Test Report
+      - name: Upload Allure Report
         if: always()
         uses: actions/upload-artifact@v2
         with:
