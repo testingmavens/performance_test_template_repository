@@ -51,7 +51,9 @@ jobs:
         run: |
           echo "REPORT_URL=https://${{ github.repository_owner }}.github.io/${{ github.repository }}/report/index.html" >> $GITHUB_ENV
 
-    # Environment setup for displaying the link in GitHub Actions
-    environment:
-      name: JMeter-Report
-      url: ${{ env.REPORT_URL }}
+      - name: Deploy to Github Pages
+        if: always()
+        id: deployment
+        uses: actions/deploy-pages@v2
+        with:
+          artifact_name: ${{ env.REPORT_URL }}
