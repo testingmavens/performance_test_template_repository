@@ -35,13 +35,21 @@ jobs:
           JMETER_SCRIPT="${{ github.workspace }}/test_plan.jmx"
           JMETER_RESULTS="${{ github.workspace }}/test/JMeter/results"
           ./apache-jmeter-5.6.2/bin/jmeter -n -t "$JMETER_SCRIPT" -l "$JMETER_RESULTS/test_results.jtl"
+          
 
       - name: Generate JMeter Report
         run: |
           JMETER_RESULTS="${{ github.workspace }}/test/JMeter/results"
           mkdir -p "$JMETER_RESULTS/report"
           ./apache-jmeter-5.6.2/bin/jmeter -g "$JMETER_RESULTS/test_results.jtl" -o "$JMETER_RESULTS/report"
-
+          
+      - name: Upload Test Report
+        if: always() # This step will always run, regardless of previous steps' success
+        uses: actions/upload-artifact@v2
+        with:
+          name: jmeter-report
+          path: ${{ github.workspace }}/test/JMeter/results/report
+          
       - name: Download HTML Report
         run: |
           mkdir -p ${{ github.workspace }}/html_report
