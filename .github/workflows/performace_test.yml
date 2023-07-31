@@ -42,19 +42,26 @@ jobs:
 
       - name: Install Allure Framework
         run: |
-          # Replace '2.14.0' with the latest version of Allure
-          curl -o allure-2.14.0.zip -Ls https://github.com/allure-framework/allure2/releases/download/2.14.0/allure-2.14.0.zip
-          unzip allure-2.14.0.zip -d ${{ github.workspace }}
-          rm allure-2.14.0.zip
-          chmod +x ${{ github.workspace }}/allure-2.14.0/bin/allure
+          # Replace '2.17.0' with the latest version of Allure
+          curl -o allure-2.17.0.zip -Ls https://github.com/allure-framework/allure2/releases/download/2.17.0/allure-2.17.0.zip
+          unzip allure-2.17.0.zip -d ${{ github.workspace }}
+          rm allure-2.17.0.zip
+          chmod +x ${{ github.workspace }}/allure-2.17.0/bin/allure
+
+      - name: Install allurectl
+        run: |
+          allure_version=$(curl -s https://api.github.com/repos/allure-framework/allurectl/releases/latest | grep tag_name | cut -d '"' -f 4)
+          curl -o allurectl -Ls https://github.com/allure-framework/allurectl/releases/download/$allure_version/allurectl-$allure_version-linux-amd64
+          chmod +x allurectl
+          sudo mv allurectl /usr/local/bin
 
       - name: Generate Allure Report
         run: |
           JMETER_RESULTS="${{ github.workspace }}/test/JMeter/results"
-          ${{ github.workspace }}/allure-2.14.0/bin/allure generate "$JMETER_RESULTS/report" -o "$JMETER_RESULTS/allure-report"
+          ${{ github.workspace }}/allure-2.17.0/bin/allure generate "$JMETER_RESULTS/report" -o "$JMETER_RESULTS/allure-report"
 
           # Merge the Allure results
-          allurectl plugins install -f -v 2.14.0
+          allurectl plugins install -f -v 2.17.0
           allurectl plugins merge "$JMETER_RESULTS/allure-report" --clean
 
       - name: Upload Allure Report
