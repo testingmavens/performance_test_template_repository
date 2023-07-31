@@ -43,8 +43,7 @@ jobs:
       - name: Generate Allure Report
         run: |
           JMETER_RESULTS="${{ github.workspace }}/test/JMeter/results"
-          docker run --rm -v "$JMETER_RESULTS/report:/allure-report" -v "$JMETER_RESULTS/allure-report:/allure-results" allure2 allure generate /allure-results -o /allure-report --clean
-
+          docker run --rm -v "$JMETER_RESULTS/report:/allure-report" -v "$JMETER_RESULTS/allure-report:/allure-results" allure/allure-docker-service:latest allure generate /allure-results -o /allure-report --clean
       - name: Upload Allure Report
         if: always()
         uses: actions/upload-artifact@v2
