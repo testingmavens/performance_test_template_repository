@@ -12,6 +12,9 @@ jobs:
       contents: read
       pages: write
       id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     name: performance test - ${{ github.event.inputs.choice }}
     steps:
@@ -49,14 +52,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v2
         with:
-          branch: gh-pages
-          folder: ${{ github.workspace }}/test/JMeter/results/report
-
-      - name: Get Report URL
-        id: report_url
-        run: |
-          echo "::set-output name=report_url::https://${{ github.repository_owner }}.github.io/${{ github.repository }}/test/JMeter/results/report/index.html"
-
-      - name: Set Environment Variable
-        run: |
-          echo "REPORT_URL=https://${{ github.repository_owner }}.github.io/${{ github.repository }}/test/JMeter/results/report/index.html" >> $GITHUB_ENV
+          name: jmeter-test-report
