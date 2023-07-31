@@ -52,4 +52,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v2
         with:
-          artifact_name: jmeter-test-report
+          artifact_name: ${{ github.workspace }}/test/JMeter/results/report/
