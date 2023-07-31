@@ -40,30 +40,17 @@ jobs:
           mkdir -p "$JMETER_RESULTS/report"
           ./apache-jmeter-5.6.2/bin/jmeter -g "$JMETER_RESULTS/test_results.jtl" -o "$JMETER_RESULTS/report"
 
-      - name: Install Allure Framework
-        run: |
-          # Replace '2.17.0' with the latest version of Allure
-          curl -o allure-2.17.0.zip -Ls https://github.com/allure-framework/allure2/releases/download/2.17.0/allure-2.17.0.zip
-          unzip allure-2.17.0.zip -d ${{ github.workspace }}
-          rm allure-2.17.0.zip
-          chmod +x ${{ github.workspace }}/allure-2.17.0/bin/allure
-
       - name: Generate Allure Report
         run: |
           JMETER_RESULTS="${{ github.workspace }}/test/JMeter/results"
-          ${{ github.workspace }}/allure-2.17.0/bin/allure generate "$JMETER_RESULTS/report" -o "$JMETER_RESULTS/allure-report"
-
-      - name: Merge Allure Results
-        run: |
-          JMETER_RESULTS="${{ github.workspace }}/test/JMeter/results"
-          allure generate "$JMETER_RESULTS/allure-report" -o "$JMETER_RESULTS/merged-allure-report" --clean
+          docker run --rm -v "$JMETER_RESULTS/report:/allure-report" -v "$JMETER_RESULTS/allure-report:/allure-results" allure2 allure generate /allure-results -o /allure-report --clean
 
       - name: Upload Allure Report
         if: always()
         uses: actions/upload-artifact@v2
         with:
           name: allure-report-${{ github.run_number }}
-          path: ${{ github.workspace }}/test/JMeter/results/merged-allure-report/
+          path: ${{ github.workspace }}/test/JMeter/results/allure-report/
 
       - name: Deploy to GitHub Pages
         if: always()
