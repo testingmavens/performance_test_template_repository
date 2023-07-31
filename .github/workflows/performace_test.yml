@@ -58,4 +58,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v2
         with:
-          artifact_name: ${{ github.workspace }}/test/JMeter/results/allure-report
+         artifact_name: /home/runner/work/performance_test_template_repository/performance_test_template_repository/test/JMeter/results/allure-report
