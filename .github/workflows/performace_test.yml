@@ -54,4 +54,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v2
         with:
-          artifact_name: allure-report-${{ github.run_number }}
+          artifact_name: jmeter-report
