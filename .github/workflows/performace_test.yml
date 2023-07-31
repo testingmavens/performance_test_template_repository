@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: jmeter-report
-          path: results/report
+          path: test/JMeter/results
 
       - name: Deploy to Github Pages
         if: always()
