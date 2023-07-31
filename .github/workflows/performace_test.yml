@@ -40,13 +40,6 @@ jobs:
           name: jmeter-report
           path: ${{ github.workspace }}/test/JMeter/results/report
 
-  deploy_report:
-    needs: performance_test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
       - name: Deploy to Github Pages
         if: always()
         id: deployment
