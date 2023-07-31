@@ -48,7 +48,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: jmeter-test-report
-          path: ${{ github.workspace }}results/
+          path: ${{ github.workspace }}/results/
           
       - name: Download HTML Report
         run: |
