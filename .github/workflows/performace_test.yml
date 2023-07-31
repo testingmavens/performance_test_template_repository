@@ -1,4 +1,5 @@
-name: JMeter Test 
+name: JMeter Test and Publish Report
+
 on:
   workflow_dispatch:
   push:
@@ -38,3 +39,16 @@ jobs:
         with:
           name: jmeter-report
           path: ${{ github.workspace }}/test/JMeter/results/report
+
+  deploy_report:
+    needs: performance_test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Deploy Report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{ github.workspace }}/test/JMeter/results/report
