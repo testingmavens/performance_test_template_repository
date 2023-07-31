@@ -39,7 +39,8 @@ jobs:
 
       - name: Deploy to GitHub Pages
         if: always()
-        uses: jamesives/github-pages-deploy-action@4.1.0
+        id: deployment
+        uses: actions/deploy-pages@v2
         with:
           branch: gh-pages
           folder: ${{ github.workspace }}/test/JMeter/results/report
