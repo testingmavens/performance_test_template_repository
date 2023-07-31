@@ -48,28 +48,22 @@ jobs:
           rm allure-2.17.0.zip
           chmod +x ${{ github.workspace }}/allure-2.17.0/bin/allure
 
-      - name: Install allurectl
-        run: |
-          allure_version=$(curl -s https://api.github.com/repos/allure-framework/allurectl/releases/latest | grep tag_name | cut -d '"' -f 4)
-          curl -o allurectl -Ls https://github.com/allure-framework/allurectl/releases/download/$allure_version/allurectl-$allure_version-linux-amd64
-          chmod +x allurectl
-          sudo mv allurectl /usr/local/bin
-
       - name: Generate Allure Report
         run: |
           JMETER_RESULTS="${{ github.workspace }}/test/JMeter/results"
           ${{ github.workspace }}/allure-2.17.0/bin/allure generate "$JMETER_RESULTS/report" -o "$JMETER_RESULTS/allure-report"
 
-          # Merge the Allure results
-          allurectl plugins install -f -v 2.17.0
-          allurectl plugins merge "$JMETER_RESULTS/allure-report" --clean
+      - name: Merge Allure Results
+        run: |
+          JMETER_RESULTS="${{ github.workspace }}/test/JMeter/results"
+          allure generate "$JMETER_RESULTS/allure-report" -o "$JMETER_RESULTS/merged-allure-report" --clean
 
       - name: Upload Allure Report
         if: always()
         uses: actions/upload-artifact@v2
         with:
           name: allure-report-${{ github.run_number }}
-          path: ${{ github.workspace }}/test/JMeter/results/allure-report/
+          path: ${{ github.workspace }}/test/JMeter/results/merged-allure-report/
 
       - name: Deploy to GitHub Pages
         if: always()
