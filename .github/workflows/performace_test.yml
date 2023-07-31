@@ -46,3 +46,12 @@ jobs:
         run: |
           mkdir -p ${{ github.workspace }}/html_report
           curl -LJO "https://${{ github.repository_owner }}.github.io/${{ github.repository }}/report/index.html" -o ${{ github.workspace }}/html_report/index.html
+
+      - name: Set Environment Variable
+        run: |
+          echo "REPORT_URL=https://${{ github.repository_owner }}.github.io/${{ github.repository }}/report/index.html" >> $GITHUB_ENV
+
+    # Environment setup for displaying the link in GitHub Actions
+    environment:
+      name: JMeter-Report
+      url: ${{ env.REPORT_URL }}
