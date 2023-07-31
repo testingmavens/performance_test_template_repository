@@ -47,8 +47,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Deploy Report to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Deploy to Github Pages
+        if: always()
+        id: deployment
+        uses: actions/deploy-pages@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{ github.workspace }}/test/JMeter/results/report
+          artifact_name: allure-report-${{ github.run_number }}
