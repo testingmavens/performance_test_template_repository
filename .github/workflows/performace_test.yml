@@ -8,10 +8,12 @@ on:
 
 jobs:
   test:
+    # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
     permissions:
       contents: read
       pages: write
       id-token: write
+    # Deploy to the github-pages environment
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -40,20 +42,21 @@ jobs:
           mkdir -p "$JMETER_RESULTS/report"
           ./apache-jmeter-5.6.2/bin/jmeter -g "$JMETER_RESULTS/test_results.jtl" -o "$JMETER_RESULTS/report"
 
-      - name: Generate Allure Report
-        run: |
-          JMETER_RESULTS="${{ github.workspace }}/test/JMeter/results"
-          docker run --rm -v "$JMETER_RESULTS/report:/allure-report" -v "$JMETER_RESULTS/allure-report:/allure-results" allure/allure-docker-service:latest allure generate /allure-results -o /allure-report --clean
-      - name: Upload Allure Report
+      - name: Upload Test Report
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: allure-report-${{ github.run_number }}
-          path: ${{ github.workspace }}/test/JMeter/results/allure-report/
+          name: jmeter-report
+          path: ${{ github.workspace }}/test/JMeter/results/report
 
-      - name: Deploy to GitHub Pages
+      - name: Download HTML Report
+        run: |
+          mkdir -p ${{ github.workspace }}/html_report
+          curl -LJO "${{ steps.deployment.outputs.page_url }}/report/index.html" -o ${{ github.workspace }}/html_report/index.html
+
+      - name: Deploy to Github Pages
         if: always()
         id: deployment
         uses: actions/deploy-pages@v2
         with:
-          artifact_name: allure-report-${{ github.run_number }}
+          artifact_name: ${{ github.workspace }}/html_report
