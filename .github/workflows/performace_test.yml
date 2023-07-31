@@ -20,12 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     name: performance test - ${{ github.event.inputs.choice }}
     steps:
-      - uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: npm
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
       - name: Install JMeter
         run: |
@@ -51,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: jmeter-test-report
-          path: ${{ github.workspace }}/test/JMeter/results/report/
+          path: ${{ github.workspace }}/test/JMeter/results/report/index.html
 
       - name: Download HTML Report
         run: |
