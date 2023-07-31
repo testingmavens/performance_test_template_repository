@@ -46,10 +46,3 @@ jobs:
         with:
           name: jmeter-test-report
           path: ${{ github.workspace }}/test/JMeter/results/report/
-
-      - name: Deploy to GitHub Pages
-        if: always()
-        id: deployment
-        uses: actions/deploy-pages@v2
-        with:
-          name: jmeter-test-report
