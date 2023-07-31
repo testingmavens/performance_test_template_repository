@@ -48,7 +48,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: jmeter-test-report
-          path: ${{ github.workspace }}/test/JMeter/results/report
+          path: ${{ github.workspace }}/test/JMeter/results/report/
           
       - name: Download HTML Report
         run: |
@@ -64,4 +64,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v2
         with:
-          artifact_name: ${{ env.REPORT_URL }}
+          artifact_name: jmeter-test-report
